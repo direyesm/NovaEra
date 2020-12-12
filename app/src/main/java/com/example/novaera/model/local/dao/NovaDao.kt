@@ -22,6 +22,6 @@ interface NovaDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertDetailPhone(phoneDetail : List<DetailsEnti>)
 
-    @Query("SELECT * FROM details_table WHERE id=:id")
-    fun getAllDetail(id: Int) : LiveData<DetailsEnti>
+    @Query("SELECT * FROM details_table WHERE id=:mId")
+    fun getAllDetail(mId: Int) : LiveData<DetailsEnti>
 }

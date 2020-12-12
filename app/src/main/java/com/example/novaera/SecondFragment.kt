@@ -1,6 +1,8 @@
 package com.example.novaera
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -20,12 +22,12 @@ import kotlinx.android.synthetic.main.item_phone_list.*
 class SecondFragment : Fragment() {
 
     lateinit var mViewModel : NovaViewModel
-    var mId: String = ""
+    var mId: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments.let {
-            mId = arguments?.getString("id") ?: ""
+            mId = arguments?.getInt("id") ?: 0
         }
         mViewModel = ViewModelProvider(this).get(NovaViewModel::class.java)
     }
@@ -40,16 +42,46 @@ class SecondFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Log.d("NNN", mId.toString())
 
-        mViewModel.getDetails(id).observe(viewLifecycleOwner, Observer {
+        mViewModel.getDetails(mId).observe(viewLifecycleOwner, Observer {
             if (it != null){
-                txtNombre.text = it.name
+                textView.text = it.name
                 Glide.with(this).load(it.image).into(imageView)
-                txtDescrip.text = it.description
+                textView3.text = it.description
                 textView5.text = it.price.toString()
                 textView7.text = it.lastPrice.toString()
+
+            }
+
+            fun email() {
+
+                val intent = Intent(Intent.ACTION_SEND)
+                intent.putExtra(Intent.EXTRA_EMAIL, arrayOf("info@novaera.cl"))
+                intent.putExtra(Intent.EXTRA_SUBJECT, "Consulta ${it.name} , id : ${it.id} ")
+                intent.putExtra(Intent.EXTRA_TEXT, "“Hola\n" +
+                        "Vi la propiedad ${it.name} de código ${it.id} y me gustaría que me\n" +
+                        "contactaran a este correo o al siguiente número _________\n" +
+                        "Quedo atento.”")
+                intent.type = "mensaje"
+                startActivity(Intent.createChooser(intent, "Contactar area de venta"))
+            }
+
+            fav.setOnClickListener {
+                email()
             }
         })
 
+
+
     }
+
+
+
+
+
+
+
+
+
 }
